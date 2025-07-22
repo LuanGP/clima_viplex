@@ -160,16 +160,17 @@
     const city = "São José, BR";
 
     function getBackgroundByWeatherId(id) {
-      if (id >= 200 && id < 300) return "https://images.unsplash.com/photo-1429552077091-836152271555?q=80&w=685&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Tempestade
-      if (id >= 300 && id < 400) return "https://images.unsplash.com/photo-1618589619111-5b932c02a2cc?q=80&w=734&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Garoa
-      if (id >= 500 && id < 600) return "https://images.unsplash.com/photo-1652284536566-7a744a89f105?q=80&w=1167&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Chuva
-      if (id >= 600 && id < 700) return "https://images.unsplash.com/photo-1701198067277-a81305704acc?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Neve
-      if (id >= 700 && id < 800) return "https://images.unsplash.com/photo-1574619151098-b0cc6becf073?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Névoa
-      if (id === 800) return "https://plus.unsplash.com/premium_photo-1677105700661-dbfad22793ca?q=80&w=2068&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Céu limpo
-      if (id === 801) return "https://images.unsplash.com/photo-1717446586299-41283dbe7e87?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Poucas nuvens
-      if (id === 802) return "https://images.unsplash.com/photo-1545099905-e079c75b423f?q=80&w=1318&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Nuvens dispersas
-      if (id === 803 || id === 804) return "https://images.unsplash.com/photo-1708552592233-5934a64eaec0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Nublado
-      return "https://plus.unsplash.com/premium_photo-1667689956673-8737a299aa8c?q=80&w=776&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; // Padrão: nublado
+      // Retorna o caminho local da imagem de fundo conforme o clima (agora na raiz do projeto)
+      if (id >= 200 && id < 300) return "tempestade.jpg"; // Tempestade
+      if (id >= 300 && id < 400) return "garoa.jpg"; // Garoa
+      if (id >= 500 && id < 600) return "chuva.jpg"; // Chuva
+      if (id >= 600 && id < 700) return "neve.jpg"; // Neve
+      if (id >= 700 && id < 800) return "nevoa.jpg"; // Névoa
+      if (id === 800) return "ceu_limpo.jpg"; // Céu limpo
+      if (id === 801) return "poucas_nuvens.jpg"; // Poucas nuvens
+      if (id === 802) return "nuvens_dispersas.jpg"; // Nuvens dispersas
+      if (id === 803 || id === 804) return "nublado.jpg"; // Nublado
+      return "padrao.jpg"; // Padrão: nublado
     }
 
     function updateClock() {
@@ -188,7 +189,7 @@
         const id = data.weather[0].id;
         const bg = getBackgroundByWeatherId(id);
         // Aplica o background apenas no painel
-        painel.style.backgroundImage = `url('${bg}&auto=format&fit=crop&w=1920&q=80')`;
+        painel.style.backgroundImage = `url('${bg}')`;
 
         document.getElementById("city").innerText = `${data.name}, ${data.sys.country}`;
         document.getElementById("temp").innerText = `${Math.round(data.main.temp)}°C`;
