@@ -117,11 +117,11 @@
     const scale = Math.min(scaleW, scaleH);
     document.body.style.fontSize = (16 * scale) + 'px';
     function setFontSizes() {
-      document.getElementById('clock').style.fontSize = (32 * scale) + 'px';
-      document.getElementById('temp').style.fontSize = (60 * scale) + 'px';
-      document.querySelectorAll('.condition').forEach(e => e.style.fontSize = (24 * scale) + 'px');
-      document.querySelectorAll('.info').forEach(e => e.style.fontSize = (16 * scale) + 'px');
-      document.querySelectorAll('.label').forEach(e => e.style.fontSize = (14 * scale) + 'px');
+      document.getElementById('clock').style.fontSize = (44 * scale) + 'px';
+      document.getElementById('temp').style.fontSize = (90 * scale) + 'px';
+      document.querySelectorAll('.condition').forEach(e => e.style.fontSize = (32 * scale) + 'px');
+      document.querySelectorAll('.info').forEach(e => e.style.fontSize = (22 * scale) + 'px');
+      document.querySelectorAll('.label').forEach(e => e.style.fontSize = (18 * scale) + 'px');
     }
     setFontSizes();
     window.addEventListener('resize', setFontSizes);
