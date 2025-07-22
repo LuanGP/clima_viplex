@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Clima e Hora</title>
+  <style>
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: #222;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .painel {
+      /* width: 384px; */
+      /* height: 768px; */
+      margin: 0;
+      position: static;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 0 24px #0008;
+      overflow: hidden;
+    }
+    .weather, .weather * {
+      color: #fff !important;
+      font-weight: bold !important;
+      text-shadow: 0 0 8px #000, 0 0 4px #000;
+    }
+    #container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .painel, #container, .weather {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .weather {
+      /* font-size: 2.5vw; */
+      font-size: 1.1em;
+      padding: 8px 12px 28px 12px;
+    }
+    #clock {
+      font-size: 3em;
+      margin-bottom: 0.5em;
+      transition: opacity 0.2s;
+    }
+    #clock-seconds {
+      transition: opacity 0.2s;
+    }
+    .temp {
+      font-size: 3.2em;
+      margin: 0.3em 0;
+    }
+    .condition {
+      font-size: 1.3em;
+      text-transform: capitalize;
+    }
+    .info {
+      display: flex;
+      justify-content: center;
+      gap: 1.2em;
+      margin-top: 1em;
+      font-size: 1em;
+    }
+    .info div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .label {
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+    .forecast {
+      width: 100%;
+      margin-top: 2.5em;
+      display: flex;
+      justify-content: center;
+      gap: 0.7em;
+    }
+    .forecast-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+    }
+    .forecast-day .dia {
+      font-weight: bold;
+      font-size: 1em;
+      margin-bottom: 2px;
+      white-space: nowrap;
+    }
+    .forecast-day .icon {
+      width: 1.8em;
+      height: 1.8em;
+      filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 4px #000);
+      margin-bottom: 2px;
+    }
+    .forecast-day .temp {
+      font-size: 0.95em;
+      font-weight: bold;
+    }
+    #wind {
+      white-space: nowrap;
+    }
+    #minmax {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="painel" id="painel-bg">
+    <div id="container">
+      <div class="weather">
+        <div id="clock">--:--</div>
+        <div id="city">Carregando...</div>
+        <div class="temp" id="temp"></div>
+        <div class="condition" id="condition"></div>
+        <div class="info">
+          <div>
+            <div class="label">Mín / Máx</div>
+            <div id="minmax"></div>
+          </div>
+          <div>
+            <div class="label">Vento</div>
+            <div id="wind"></div>
+          </div>
+          <div>
+            <div class="label">Umidade</div>
+            <div id="humidity"></div>
+          </div>
+        </div>
+        <div class="forecast" id="forecast"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Defina aqui o tamanho do painel (em pixels)
+    const panelWidth = 384;
+    const panelHeight = 768;
+    // Ajusta o tamanho do painel
+    const painel = document.getElementById('painel-bg');
+    painel.style.width = panelWidth + 'px';
+    painel.style.height = panelHeight + 'px';
+    const container = document.getElementById('container');
+    container.style.width = panelWidth + 'px';
+    container.style.height = panelHeight + 'px';
+
+    const apiKey = "c8c70c1d61bc68b2148356979f336041";
+    const city = "Florianópolis, BR";
+
+    function getBackgroundByWeatherId(id) {
+      // Retorna o caminho local da imagem de fundo conforme o clima (agora na raiz do projeto)
+      if (id >= 200 && id < 300) return "tempestade.jpg"; // Tempestade
+      if (id >= 300 && id < 400) return "garoa.jpg"; // Garoa
+      if (id >= 500 && id < 600) return "chuva.jpg"; // Chuva
+      if (id >= 600 && id < 700) return "neve.jpg"; // Neve
+      if (id >= 700 && id < 800) return "nevoa.jpg"; // Névoa
+      if (id === 800) return "ceu_limpo.jpg"; // Céu limpo
+      if (id === 801) return "poucas_nuvens.jpg"; // Poucas nuvens
+      if (id === 802) return "nuvens_dispersas.jpg"; // Nuvens dispersas
+      if (id === 803 || id === 804) return "nublado.jpg"; // Nublado
+      return "padrao.jpg"; // Padrão: nublado
+    }
+
+    function getSvgByCondition(condition) {
+      condition = condition.toLowerCase();
+      if (condition.includes('algumas nuvens')) return 'icons/animated/cloudy.svg';
+      if (condition.includes('nuvens dispersas')) return 'icons/animated/cloudy.svg';
+      if (condition.includes('nublado')) return 'icons/animated/cloudy.svg';
+      if (condition.includes('céu limpo')) return 'icons/animated/day.svg';
+      if (condition.includes('noite')) return 'icons/animated/night.svg';
+      if (condition.includes('chuva')) return 'icons/animated/rainy-1.svg';
+      if (condition.includes('neve')) return 'icons/animated/snowy-1.svg';
+      if (condition.includes('tempestade') || condition.includes('trovoada')) return 'icons/animated/thunder.svg';
+      return null;
+    }
+    function getAnimatedSvgByIcon(icon) {
+      if (icon.startsWith('01')) return 'icons/animated/day.svg';
+      if (icon.startsWith('02')) return 'icons/animated/cloudy-day-1.svg';
+      if (icon.startsWith('03')) return 'icons/animated/cloudy.svg';
+      if (icon.startsWith('04')) return 'icons/animated/cloudy.svg';
+      if (icon.startsWith('09')) return 'icons/animated/rainy-4.svg';
+      if (icon.startsWith('10')) return 'icons/animated/rainy-1.svg';
+      if (icon.startsWith('11')) return 'icons/animated/thunder.svg';
+      if (icon.startsWith('13')) return 'icons/animated/snowy-1.svg';
+      if (icon.startsWith('50')) return 'icons/animated/cloudy.svg';
+      return null;
+    }
+
+    function updateClock() {
+      const clock = document.getElementById("clock");
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      clock.innerHTML = `${hours}:${minutes}:<span id='clock-seconds'>${seconds}</span>`;
+      const clockSeconds = document.getElementById('clock-seconds');
+      clockSeconds.style.opacity = 0.5;
+      setTimeout(() => { clockSeconds.style.opacity = 1; }, 100);
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock(); // chama já ao carregar
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=pt_br`)
+      .then(response => response.json())
+      .then(data => {
+        const id = data.weather[0].id;
+        const bg = getBackgroundByWeatherId(id);
+        // Aplica o background apenas no painel
+        painel.style.backgroundImage = `url('${bg}')`;
+
+        // Exibir cidade/estado de forma dinâmica
+        let cidadeEstado = city.split(",")[0].trim();
+        let estado = "SC";
+        document.getElementById("city").innerText = `${cidadeEstado} / ${estado}`;
+        document.getElementById("temp").innerText = `${Math.round(data.main.temp)}°C`;
+        const conditionText = data.weather[0].description;
+        const svgUrl = getSvgByCondition(conditionText);
+        if (svgUrl) {
+          document.getElementById("condition").innerHTML = `${conditionText} <img src='${svgUrl}' alt='' style='vertical-align:middle; height:1.5em;'>`;
+        } else {
+          document.getElementById("condition").innerText = conditionText;
+        }
+        document.getElementById("minmax").innerHTML = `${Math.round(data.main.temp_min)}&nbsp;° / ${Math.round(data.main.temp_max)}&nbsp;°`;
+        document.getElementById("wind").innerHTML = `${Math.round(data.wind.speed * 3.6)}&nbsp;km/h`;
+        document.getElementById("humidity").innerText = `${data.main.humidity}%`;
+      })
+      .catch(error => {
+        document.getElementById("city").innerText = "Erro ao carregar clima";
+        console.error(error);
+      });
+
+    // Função para obter o nome do dia da semana em português
+    function getDiaSemana(dateStr) {
+      const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+      const d = new Date(dateStr);
+      return dias[d.getDay()];
+    }
+
+    // Função para buscar e exibir a previsão dos próximos 3 dias
+    function carregarPrevisao() {
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric&lang=pt_br`)
+        .then(response => response.json())
+        .then(data => {
+          // Agrupa previsões por dia
+          const dias = {};
+          data.list.forEach(item => {
+            const dia = item.dt_txt.split(' ')[0];
+            if (!dias[dia]) dias[dia] = [];
+            dias[dia].push(item);
+          });
+          // Pega os próximos 3 dias (ignorando o dia de hoje)
+          const hoje = new Date().toISOString().split('T')[0];
+          const diasKeys = Object.keys(dias).filter(d => d > hoje).slice(0, 3);
+          let html = '';
+          diasKeys.forEach(dia => {
+            const previsoes = dias[dia];
+            const min = Math.round(Math.min(...previsoes.map(p => p.main.temp_min)));
+            const max = Math.round(Math.max(...previsoes.map(p => p.main.temp_max)));
+            const meio = previsoes[Math.floor(previsoes.length/2)];
+            const icon = meio.weather[0].icon;
+            const desc = meio.weather[0].description;
+            const svgIcon = getAnimatedSvgByIcon(icon);
+            html += `<div class='forecast-day'>
+              <span class='dia'>${getDiaSemana(dia).split('-')[0]}</span>
+              <img class='icon' src='${svgIcon ? svgIcon : 'https://openweathermap.org/img/wn/' + icon + '@2x.png'}' alt='${desc}'>
+              <span class='temp'>${min}°/${max}°</span>
+            </div>`;
+          });
+          document.getElementById('forecast').innerHTML = html;
+        })
+        .catch(() => {
+          document.getElementById('forecast').innerHTML = '<div style="text-align:center;">Erro ao carregar previsão</div>';
+        });
+    }
+    carregarPrevisao();
+
+    // Ajuste dinâmico do font-size da .weather conforme o tamanho do painel
+    function ajustarFontePainel() {
+      const base = Math.min(panelWidth, panelHeight);
+      document.querySelector('.weather').style.fontSize = (base * 0.075) + 'px';
+      document.querySelector('.weather').style.lineHeight = '1.05';
+    }
+    ajustarFontePainel();
+    window.addEventListener('resize', ajustarFontePainel);
+  </script>
+</body>
+</html>
