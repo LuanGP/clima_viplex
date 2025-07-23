@@ -205,9 +205,12 @@
     function updateClock() {
       const clock = document.getElementById("clock");
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
+      // Ajusta para fuso de São Paulo (UTC-3)
+      const offset = -3;
+      const horaSP = new Date(now.getTime() + offset * 60 * 60 * 1000);
+      const hours = horaSP.getUTCHours().toString().padStart(2, '0');
+      const minutes = horaSP.getUTCMinutes().toString().padStart(2, '0');
+      const seconds = horaSP.getUTCSeconds().toString().padStart(2, '0');
       clock.innerHTML = `${hours}:${minutes}:<span id='clock-seconds'>${seconds}</span>`;
       const clockSeconds = document.getElementById('clock-seconds');
       clockSeconds.style.opacity = 0.5;
@@ -269,9 +272,11 @@
           });
           // Pega os próximos 3 dias (ignorando o dia de hoje)
           const hoje = new Date();
-          hoje.setHours(0,0,0,0);
+          // Ajusta para fuso de São Paulo (UTC-3)
+          const offset = -3; // horas
+          hoje.setUTCHours(hoje.getUTCHours() + offset, 0, 0, 0);
           const hojeStr = hoje.toISOString().split('T')[0];
-          const diasKeys = Object.keys(dias).filter(d => new Date(d) > hoje).slice(0, 3);
+          const diasKeys = Object.keys(dias).filter(d => d > hojeStr).slice(0, 3);
           let html = '';
           diasKeys.forEach(dia => {
             const previsoes = dias[dia];
