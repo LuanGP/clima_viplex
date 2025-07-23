@@ -268,8 +268,10 @@
             dias[dia].push(item);
           });
           // Pega os próximos 3 dias (ignorando o dia de hoje)
-          const hoje = new Date().toISOString().split('T')[0];
-          const diasKeys = Object.keys(dias).filter(d => d > hoje).slice(0, 3);
+          const hoje = new Date();
+          hoje.setHours(0,0,0,0);
+          const hojeStr = hoje.toISOString().split('T')[0];
+          const diasKeys = Object.keys(dias).filter(d => new Date(d) > hoje).slice(0, 3);
           let html = '';
           diasKeys.forEach(dia => {
             const previsoes = dias[dia];
