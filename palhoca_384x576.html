@@ -50,11 +50,11 @@
     }
     .weather {
       /* font-size: 2.5vw; */
-      font-size: 1em;
+      font-size: 1.2em;
       padding: 8px 12px 28px 12px;
     }
     #clock {
-      font-size: 2.5em;
+      font-size: 3em;
       margin-bottom: 0.5em;
       transition: opacity 0.2s;
     }
@@ -62,11 +62,11 @@
       transition: opacity 0.2s;
     }
     .temp {
-      font-size: 2.8em;
+      font-size: 3.2em;
       margin: 0.3em 0;
     }
     .condition {
-      font-size: 1.1em;
+      font-size: 1.3em;
       text-transform: capitalize;
     }
     .info {
@@ -74,7 +74,7 @@
       justify-content: center;
       gap: 1.2em;
       margin-top: 0.8em;
-      font-size: 1em;
+      font-size: 1.1em;
     }
     .info div {
       display: flex;
@@ -100,18 +100,18 @@
     }
     .forecast-day .dia {
       font-weight: bold;
-      font-size: 1em;
+      font-size: 1.1em;
       margin-bottom: 2px;
       white-space: nowrap;
     }
     .forecast-day .icon {
-      width: 1.8em;
-      height: 1.8em;
+      width: 2em;
+      height: 2em;
       filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 4px #000);
       margin-bottom: 2px;
     }
     .forecast-day .temp {
-      font-size: 0.95em;
+      font-size: 1.05em;
       font-weight: bold;
     }
     #wind {
@@ -332,7 +332,7 @@
     // Ajuste dinâmico do font-size da .weather conforme o tamanho do painel
     function ajustarFontePainel() {
       const base = Math.min(panelWidth, panelHeight);
-      document.querySelector('.weather').style.fontSize = (base * 0.06) + 'px';
+      document.querySelector('.weather').style.fontSize = (base * 0.07) + 'px';
       document.querySelector('.weather').style.lineHeight = '1.05';
     }
     ajustarFontePainel();
